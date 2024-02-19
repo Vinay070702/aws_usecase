@@ -29,7 +29,7 @@ public class DogFactLambda implements RequestHandler<APIGatewayProxyRequestEvent
         // Code to call the external API and extract the fact from the response
         // You can use a library like Apache HttpClient or HttpURLConnection for HTTP requests
         // Parse the JSON response and return the fact
-        return "The Mayans and Aztecs symbolized every tenth day with the dog...";
+        return "The Mayans and Aztecs symbolized every tenth day with the dog..";
     }
 
     private void saveFactToDynamoDB(String fact) {
