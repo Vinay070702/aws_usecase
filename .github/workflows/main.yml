@@ -40,11 +40,9 @@ jobs:
 
       - name: Deploy to Lambda
         run: |
-          aws lambda update-function-code --function-name YourLambdaFunctionName \
-            --zip-file fileb://target/your-lambda-function.jar
+          aws lambda update-function-code --function-name DogFactLambda \
+            --zip-file fileb://target/aws_usecase-1.0-SNAPSHOT-jar-with-dependencies.jar
 
       - name: Run Lambda Test
         run: |
-          # Add commands to trigger a test on your Lambda function
-          # For example, invoke the function and check logs
-          aws lambda invoke --function-name YourLambdaFunctionName --log-type Tail /dev/null | jq '.LogResult' -r | base64 --decode
+          aws lambda invoke --function-name DogFactLambda --log-type Tail /dev/null | jq '.LogResult' -r | base64 --decode
