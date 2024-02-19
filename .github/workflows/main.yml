@@ -40,8 +40,7 @@ jobs:
 
       - name: Deploy to Lambda
         run: |
-          aws lambda update-function-code --function-name DogFactLambda \
-            --zip-file fileb://target/aws_usecase-1.0-SNAPSHOT-jar-with-dependencies.jar
+          aws lambda update-function-code --function-name HandlerString --zip-file fileb://target/aws_usecase-1.0-SNAPSHOT.jar
 
       - name: Run Lambda Test
         run: |
