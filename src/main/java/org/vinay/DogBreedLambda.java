@@ -26,6 +26,9 @@ import java.util.Random;
 public class DogBreedLambda implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
     private static final String DYNAMODB_TABLE_NAME = "dogbreeds";
 
+    static String getTableName() {
+        return DYNAMODB_TABLE_NAME;
+    }
     @Override
     public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent request, Context context) {
         DogApiResponse dogApiResponse = fetchDataFromExternalAPI();
@@ -36,7 +39,7 @@ public class DogBreedLambda implements RequestHandler<APIGatewayProxyRequestEven
         response.setBody("Fact stored successfully!");
         return response;
     }
-    private DogApiResponse fetchDataFromExternalAPI() {
+    DogApiResponse fetchDataFromExternalAPI() {
         List<String> breedIds = Arrays.asList(
                 "68f47c5a-5115-47cd-9849-e45d3c378f12",
                 "4ddbe251-72af-495e-8e9d-869217e1d92a",
@@ -98,7 +101,7 @@ public class DogBreedLambda implements RequestHandler<APIGatewayProxyRequestEven
             return null;
         }
     }
-    private void saveFactToDynamoDB(DogApiResponse dogApiResponse) {
+    void saveFactToDynamoDB(DogApiResponse dogApiResponse) {
         if (dogApiResponse == null) {
             // Handle the case when dogApiResponse is null
             System.err.println("Error: dogApiResponse is null");

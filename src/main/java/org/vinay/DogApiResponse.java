@@ -28,6 +28,13 @@ public class DogApiResponse {
         return links;
     }
 
+    public void setData(DogData data) {
+        this.data = data;
+    }
+
+    public void setLinks(DogLinks links) {
+        this.links = links;
+    }
     // Other methods or utility functions can be added here
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -53,6 +60,14 @@ public class DogApiResponse {
 
         public Map<String, Object> getRelationships() {
             return relationships;
+        }
+
+        public void setId(String s) {
+            this.id = s;
+        }
+
+        public void setAttributes(DogAttributes attributes) {
+            this.attributes = attributes;
         }
     }
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -84,8 +99,15 @@ public class DogApiResponse {
         public boolean isHypoallergenic() {
             return hypoallergenic;
         }
-    }
 
+        public void setName(String breedName) {
+            this.name = breedName;
+        }
+
+        public void setDescription(String breedDescription) {
+            this.description = breedDescription;
+        }
+    }
 
     public static class DogLinks {
         public String self;
