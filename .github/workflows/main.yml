@@ -39,12 +39,6 @@ jobs:
       - name: Build with Maven
         run: mvn clean package
 
-      - name: Display file structure
-        run: |
-          ls -R
-          echo "Working Directory: $PWD"
-          echo "Temporary Directory: $RUNNER_TEMP"
-
       - name: Deploy to Lambda
         run: |
           aws lambda update-function-code --function-name HandlerString --zip-file fileb://target/aws_usecase-1.0-SNAPSHOT.jar
