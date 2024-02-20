@@ -1,6 +1,9 @@
 package org.vinay;
 
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
 
-class DogBreedLambdaTest {
+@RunWith(MockitoJUnitRunner.class)
+public class DogBreedLambdaTest {
 
 }

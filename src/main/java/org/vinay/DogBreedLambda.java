@@ -85,7 +85,7 @@ public class DogBreedLambda implements RequestHandler<APIGatewayProxyRequestEven
             throw new RuntimeException("Error fetching data from external API: " + e.getMessage(), e);
         }
     }
-    private static String getRandomBreedId(List<String> breedIds) {
+    static String getRandomBreedId(List<String> breedIds) {
         Random random = new Random();
         int randomIndex = random.nextInt(breedIds.size());
         return breedIds.get(randomIndex);
