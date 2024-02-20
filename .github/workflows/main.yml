@@ -51,4 +51,4 @@ jobs:
 
       - name: Run Lambda Test
         run: |
-          aws lambda invoke --function-name DogFactLambda --log-type Tail /dev/null | jq '.LogResult' -r | base64 --decode
+          aws lambda invoke --function-name Dogbreedlambda --log-type Tail /dev/null | jq '.LogResult' -r | base64 --decode
