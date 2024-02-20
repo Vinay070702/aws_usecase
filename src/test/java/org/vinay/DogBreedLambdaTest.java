@@ -5,14 +5,14 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 
-public class DogFactLambdaTest extends TestCase
+public class DogBreedLambdaTest extends TestCase
 {
     /**
      * Create the test case
      *
      * @param testName name of the test case
      */
-    public DogFactLambdaTest(String testName )
+    public DogBreedLambdaTest(String testName )
     {
         super( testName );
     }
@@ -22,7 +22,7 @@ public class DogFactLambdaTest extends TestCase
      */
     public static Test suite()
     {
-        return new TestSuite( DogFactLambdaTest.class );
+        return new TestSuite( DogBreedLambdaTest.class );
     }
 
     /**

@@ -22,15 +22,13 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 
-
-public class DogFactLambda implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
+public class DogBreedLambda implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
     private static final String DYNAMODB_TABLE_NAME = "dogbreeds";
 
     @Override
     public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent request, Context context) {
-        DogApiResponse dogApiResponse = getDogFact();
+        DogApiResponse dogApiResponse = fetchDataFromExternalAPI();
         saveFactToDynamoDB(dogApiResponse);
 
         APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
@@ -51,7 +49,8 @@ public class DogFactLambda implements RequestHandler<APIGatewayProxyRequestEvent
                 "6dee41b1-0805-4f4e-a079-c8b1cdfa1768",
                 "beff84c3-66c4-4335-beba-f346c2565881"
         );
-        // Replace the URL with your actual external API endpoint
+
+        // Your URL with your actual external API endpoint
         String apiUrl = "https://dogapi.dog/api/v2/breeds/"+getRandomBreedId(breedIds);
 
         try {
@@ -63,8 +62,7 @@ public class DogFactLambda implements RequestHandler<APIGatewayProxyRequestEvent
             // Check if the response code is successful (2xx)
             if (response.getStatusLine().getStatusCode() == 200) {
                 // Read the response content
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(response.getEntity().getContent()));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 
                 StringBuilder result = new StringBuilder();
                 String line;
@@ -89,12 +87,7 @@ public class DogFactLambda implements RequestHandler<APIGatewayProxyRequestEvent
         int randomIndex = random.nextInt(breedIds.size());
         return breedIds.get(randomIndex);
     }
-    private DogApiResponse getDogFact() {
-        // Code to call the external API and extract the fact from the response
-        // You can use a library like Apache HttpClient or HttpURLConnection for HTTP requests
-        // Parse the JSON response and return the fact
-        return fetchDataFromExternalAPI();
-    }
+
     public static DogApiResponse parseDogApiResponse(String json) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -129,18 +122,11 @@ public class DogFactLambda implements RequestHandler<APIGatewayProxyRequestEvent
             }
         }
 
-        String factId = generateUniqueId();
-
-        // Save the fact to DynamoDB
+        // Save the breed to DynamoDB
         Item item = new Item()
                 .withPrimaryKey("BreedId", breedId)
                 .withString("breedName", breedName)
                 .withString("Description", description);
         table.putItem(item);
-    }
-
-    private String generateUniqueId() {
-        // Use UUID to generate a unique ID
-        return UUID.randomUUID().toString();
     }
 }
