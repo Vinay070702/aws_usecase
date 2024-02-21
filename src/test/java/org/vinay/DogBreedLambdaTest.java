@@ -8,7 +8,9 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestClassOrder;
 import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.mockito.*;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -18,7 +20,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
-
+@RunWith(JUnit4.class)
 public class DogBreedLambdaTest {
 
     @InjectMocks
