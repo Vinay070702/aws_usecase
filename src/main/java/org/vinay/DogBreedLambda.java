@@ -24,20 +24,38 @@ import java.util.List;
 import java.util.Random;
 
 public class DogBreedLambda implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
-    private static final String DYNAMODB_TABLE_NAME = "dogbreeds";
+    private String DYNAMODB_TABLE_NAME = "dogbreeds";
+    private DynamoDB dynamoDB;
 
-    static String getTableName() {
+    public void setDynamoDB(DynamoDB dynamoDB) {
+        this.dynamoDB = dynamoDB;
+    }
+    public void setTableName(String name) {
+        this.DYNAMODB_TABLE_NAME = name;
+    }
+    public String getTableName() {
         return DYNAMODB_TABLE_NAME;
     }
     @Override
     public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent request, Context context) {
-        DogApiResponse dogApiResponse = fetchDataFromExternalAPI();
-        saveFactToDynamoDB(dogApiResponse);
+        try {
+            DogApiResponse dogApiResponse = fetchDataFromExternalAPI();
+            saveFactToDynamoDB(dogApiResponse);
 
-        APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
-        response.setStatusCode(200);
-        response.setBody("Fact stored successfully!");
-        return response;
+            APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
+            response.setStatusCode(200);
+            response.setBody("Fact stored successfully!");
+            return response;
+        } catch (Exception e) {
+            // Log the exception
+            e.printStackTrace();
+
+            // Return an error response
+            APIGatewayProxyResponseEvent errorResponse = new APIGatewayProxyResponseEvent();
+            errorResponse.setStatusCode(500);
+            errorResponse.setBody("Error occurred: " + e.getMessage());
+            return errorResponse;
+        }
     }
     DogApiResponse fetchDataFromExternalAPI() {
         List<String> breedIds = Arrays.asList(
@@ -54,7 +72,7 @@ public class DogBreedLambda implements RequestHandler<APIGatewayProxyRequestEven
         );
 
         // Your URL with your actual external API endpoint
-        String apiUrl = "https://dogapi.dog/api/v2/breeds/"+getRandomBreedId(breedIds);
+        String apiUrl = "https://dogapi.dog/api/v2/breeds/" + getRandomBreedId(breedIds);
 
         try {
             HttpClient httpClient = HttpClients.createDefault();

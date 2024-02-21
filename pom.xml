@@ -77,6 +77,14 @@
       <artifactId>jackson-databind</artifactId>
       <version>2.16.1</version>
     </dependency>
+    <!-- AWS SDK for Java -->
+    <!-- https://mvnrepository.com/artifact/software.amazon.awssdk/dynamodb-enhanced -->
+    <dependency>
+      <groupId>software.amazon.awssdk</groupId>
+      <artifactId>dynamodb-enhanced</artifactId>
+      <version>2.24.5</version>
+    </dependency>
+
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
@@ -87,6 +95,18 @@
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
       <version>5.7.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-module-junit4</artifactId>
+      <version>2.0.9</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-api-mockito2</artifactId>
+      <version>2.0.9</version>
       <scope>test</scope>
     </dependency>
 
