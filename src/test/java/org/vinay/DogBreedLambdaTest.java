@@ -20,7 +20,7 @@ import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 @RunWith(MockitoJUnitRunner.class)
-class DogBreedLambdaTest {
+public class DogBreedLambdaTest {
 
     @InjectMocks
     private DogBreedLambda lambda;
