@@ -6,14 +6,15 @@ import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestClassOrder;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.*;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,7 +30,17 @@ public class DogBreedLambdaTest {
     private DynamoDB dynamoDBMock;
     @Mock
     private Table tableMock;
+    private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+    private final PrintStream originalErr = System.err;
+    @BeforeEach
+    public void setUpStreams() {
+        System.setErr(new PrintStream(errContent));
+    }
 
+    @AfterEach
+    public void restoreStreams() {
+        System.setErr(originalErr);
+    }
     @BeforeEach
     void setUp() throws Exception{
         dynamoDBMock = mock(DynamoDB.class);
@@ -158,7 +169,8 @@ public class DogBreedLambdaTest {
         lambda.saveFactToDynamoDB(dogApiResponse);
 
         // Assert
-        // Verify that an error message is logged (you may need to enhance logging in your code for better testing)
+        String loggedOutput = errContent.toString();
+        assertTrue(loggedOutput.contains("Error: dogApiResponse is null"));
     }
 
     @Test
