@@ -1,0 +1,68 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+
+Parameters:
+  CreateDynamoDBTable:
+    Type: String
+    Default: 'true'
+    AllowedValues: ['true', 'false']
+
+Conditions:
+  ShouldCreateDynamoDBTable: !Equals [!Ref CreateDynamoDBTable, 'true']
+
+Resources:
+  Dogbreedlambdalocal:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: org.vinay.DogBreedLambda::handleRequest
+      Runtime: java17
+      CodeUri: D:/Testprojects/aws_usecase/
+      Timeout: 10
+      MemorySize: 512
+      Environment:
+        Variables:
+          TABLE_NAME: !If [ShouldCreateDynamoDBTable, !Ref dogbreeds, '']
+      Role: arn:aws:iam::730335608470:role/githubactions_role
+    Events:
+      ApiGatewayEvent:
+        Type: Api
+        Properties:
+          Path: /my-endpoint
+          Method: POST
+
+  DogbreedlambdalocalAPI:
+    Type: 'AWS::Serverless::Api'
+    Properties:
+      StageName: 'prod'
+      DefinitionBody:
+        openapi: "3.0.1"
+        info:
+          title: "DogbreedlambdalocalAPI"
+          version: "1.0.0"
+        paths:
+          /my-endpoint:
+            post:
+              responses:
+                "200":
+                  description: "Successful response"
+              x-amazon-apigateway-integration:
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${Dogbreedlambdalocal.Arn}/invocations
+                passthroughBehavior: "when_no_match"
+                httpMethod: "POST"
+                type: "aws_proxy"
+
+  dogbreeds:
+    Type: 'AWS::DynamoDB::Table'
+    Condition: ShouldCreateDynamoDBTable
+    Properties:
+      TableName: 'dogbreeds'
+      AttributeDefinitions:
+        - AttributeName: 'Breed'
+          AttributeType: 'S'
+      KeySchema:
+        - AttributeName: 'Breed'
+          KeyType: 'HASH'
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5

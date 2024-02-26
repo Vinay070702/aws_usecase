@@ -1,0 +1,22 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS SAM CLI Nested Stack for Auto Dependency Layer Creation
+Metadata:
+  SamCliInfo: 1.109.0
+  key: AWS SAM CLI sync command
+Outputs:
+  Dogbreedlambdalocal470dce6cDepLayer:
+    Value:
+      Ref: Dogbreedlambdalocal470dce6cDepLayer
+Resources:
+  Dogbreedlambdalocal470dce6cDepLayer:
+    Metadata:
+      CreatedBy: AWS SAM CLI sync command
+    Properties:
+      CompatibleRuntimes:
+      - java17
+      ContentUri: D:\Testprojects\aws_usecase\.aws-sam\auto-dependency-layer\Dogbreedlambdalocal470dce6cDepLayer
+      Description: Auto created layer for dependencies of function Dogbreedlambdalocal
+      LayerName: awsusecaselocal985419b8-Dogbreedlambdalocal470dce6c-DepLayer
+      RetentionPolicy: Delete
+    Type: AWS::Serverless::LayerVersion
+Transform: AWS::Serverless-2016-10-31

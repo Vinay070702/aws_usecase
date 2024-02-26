@@ -1,0 +1,46 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  Dogbreedlambdalocal:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: org.vinay.DogBreedLambda::handleRequest
+      Runtime: java17
+      CodeUri: Dogbreedlambdalocal
+      Timeout: 10
+      MemorySize: 512
+      Environment: null
+      Layers:
+      - Fn::GetAtt:
+        - AwsSamAutoDependencyLayerNestedStack
+        - Outputs.Dogbreedlambdalocal470dce6cDepLayer
+    Metadata:
+      SamResourceId: Dogbreedlambdalocal
+  DogbreedlambdalocalAPI:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      DefinitionBody:
+        openapi: 3.0.1
+        info:
+          title: DogbreedlambdalocalAPI
+          version: 1.0.0
+        paths:
+          /my-endpoint:
+            get:
+              responses:
+                '200':
+                  description: Successful response
+              x-amazon-apigateway-integration:
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${Dogbreedlambdalocal.Arn}/invocations
+                passthroughBehavior: when_no_match
+                httpMethod: POST
+                type: aws_proxy
+  AwsSamAutoDependencyLayerNestedStack:
+    DeletionPolicy: Delete
+    Metadata:
+      CreatedBy: AWS SAM CLI sync command
+    Properties:
+      TemplateURL: D:\Testprojects\aws_usecase\.aws-sam\auto-dependency-layer\adl_nested_template.yaml
+    Type: AWS::CloudFormation::Stack

@@ -1,0 +1,87 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+
+Resources:
+  Dogbreedlambdalocal:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: org.vinay.DogBreedLambda::handleRequest
+      Runtime: java17
+      CodeUri: D:/Testprojects/aws_usecase/
+      Timeout: 10  # Increase timeout to 10 seconds
+      MemorySize: 512  # Adjust memory allocation (in MB)
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref dogbreeds
+
+  dogbreeds:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: 'dogbreeds'
+      AttributeDefinitions:
+        - AttributeName: 'Breed'
+          AttributeType: 'S'
+      KeySchema:
+        - AttributeName: 'Breed'
+          KeyType: 'HASH'
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
+  DogbreedlambdalocalAPI:
+    Type: 'AWS::Serverless::Api'
+    Properties:
+      StageName: 'prod'
+      DefinitionBody:
+        openapi: "3.0.1"
+        info:
+          title: "DogbreedlambdalocalAPI"
+          version: "1.0.0"
+        paths:
+          /my-endpoint:
+            get:
+              responses:
+                "200":
+                  description: "Successful response"
+              x-amazon-apigateway-integration:
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${Dogbreedlambdalocal.Arn}/invocations
+                passthroughBehavior: "when_no_match"
+                httpMethod: "POST"
+                type: "aws_proxy"
+
+
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+
+Resources:
+  Dogbreedlambdalocal:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: org.vinay.DogBreedLambda::handleRequest
+      Runtime: java17
+      CodeUri: D:/Testprojects/aws_usecase/
+      Timeout: 10  # Increase timeout to 10 seconds
+      MemorySize: 512  # Adjust memory allocation (in MB)
+
+  DogbreedlambdalocalAPI:
+    Type: 'AWS::Serverless::Api'
+    Properties:
+      StageName: 'prod'
+      DefinitionBody:
+        openapi: "3.0.1"
+        info:
+          title: "DogbreedlambdalocalAPI"
+          version: "1.0.0"
+        paths:
+          /my-endpoint:
+            get:
+              responses:
+                "200":
+                  description: "Successful response"
+              x-amazon-apigateway-integration:
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${Dogbreedlambdalocal.Arn}/invocations
+                passthroughBehavior: "when_no_match"
+                httpMethod: "POST"
+                type: "aws_proxy"
