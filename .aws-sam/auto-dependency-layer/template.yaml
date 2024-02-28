@@ -1,5 +1,17 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
+Parameters:
+  CreateDynamoDBTable:
+    Type: String
+    Default: 'true'
+    AllowedValues:
+    - 'true'
+    - 'false'
+Conditions:
+  ShouldCreateDynamoDBTable:
+    Fn::Equals:
+    - Ref: CreateDynamoDBTable
+    - 'true'
 Resources:
   Dogbreedlambdalocal:
     Type: AWS::Serverless::Function
@@ -9,11 +21,24 @@ Resources:
       CodeUri: Dogbreedlambdalocal
       Timeout: 10
       MemorySize: 512
-      Environment: null
+      Environment:
+        Variables:
+          TABLE_NAME:
+            Fn::If:
+            - ShouldCreateDynamoDBTable
+            - Ref: dogbreeds
+            - ''
+      Role: arn:aws:iam::730335608470:role/githubactions_role
       Layers:
       - Fn::GetAtt:
         - AwsSamAutoDependencyLayerNestedStack
         - Outputs.Dogbreedlambdalocal470dce6cDepLayer
+    Events:
+      ApiGatewayEvent:
+        Type: Api
+        Properties:
+          Path: /my-endpoint
+          Method: POST
     Metadata:
       SamResourceId: Dogbreedlambdalocal
   DogbreedlambdalocalAPI:
@@ -27,7 +52,7 @@ Resources:
           version: 1.0.0
         paths:
           /my-endpoint:
-            get:
+            post:
               responses:
                 '200':
                   description: Successful response
@@ -37,6 +62,20 @@ Resources:
                 passthroughBehavior: when_no_match
                 httpMethod: POST
                 type: aws_proxy
+  dogbreeds:
+    Type: AWS::DynamoDB::Table
+    Condition: ShouldCreateDynamoDBTable
+    Properties:
+      TableName: dogbreeds
+      AttributeDefinitions:
+      - AttributeName: Breed
+        AttributeType: S
+      KeySchema:
+      - AttributeName: Breed
+        KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
   AwsSamAutoDependencyLayerNestedStack:
     DeletionPolicy: Delete
     Metadata:
